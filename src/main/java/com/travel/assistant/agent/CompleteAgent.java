@@ -7,7 +7,7 @@ import com.travel.assistant.domain.PlanStep;
 import org.springframework.stereotype.Component;
 
 @Component("completeAgent")
-public class CompleteAgent implements BaseAgent {
+public class CompleteAgent implements Agent {
 
     private static final String PROMPT = "你是助手，能够获取更多的用户输入";
 

@@ -5,24 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.travel.assistant.agent.BaseAgent;
+import com.travel.assistant.agent.Agent;
 import com.travel.assistant.domain.Plan;
 import com.travel.assistant.eums.StepStatusEnum;
 import com.travel.assistant.tool.PlanTool;
-import dev.langchain4j.agent.tool.ToolSpecification;
-import dev.langchain4j.agent.tool.ToolSpecifications;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.UserMessage;
-import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
-import dev.langchain4j.model.chat.request.ChatRequest;
-import dev.langchain4j.model.chat.request.ChatRequestParameters;
 import dev.langchain4j.model.input.PromptTemplate;
 import dev.langchain4j.service.AiServices;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,11 +26,13 @@ public class PlanningFlow {
     private ChatLanguageModel model;
 
     @Resource
-    private Map<String, BaseAgent> agentMap;
+    private Map<String, Agent> agentMap;
 
     private static final String PLANNING_SYSTEM_PROMPT
-        = "你是一个旅行出行助手，能将用户负责的出行需求，分解为可管理的步骤，并且一步步执行，并记录执行进度。"
-        + "比如提醒用户补充信息(日期、时间、出发城市、目的城市等)、查询交通出行方案等，最终帮助用户完成出行规划的旅行助手。\n"
+        = "你是一个资深旅行助手，能将用户负责的出行需求，分解为包含交通、住宿、景点信息等可管理的小的步骤，"
+        + "并且一步步执行，并记录执行进度。"
+        + "比如提醒用户补充信息(日期、时间、出发城市、目的城市等)、查询交通出行方案、查询酒店信息等，"
+        + "最终帮助用户完成整个出行规划（包含去程、返程）的旅行助手。\n"
         + "今天的日期是 {current_date}。";
 
     public String execute(String inputText) {
@@ -78,7 +74,7 @@ public class PlanningFlow {
                 messages.add(new UserMessage(step.getStepName()));
 
                 String agentName = model.chat(messages).aiMessage().text();
-                BaseAgent agent = agentMap.get(agentName);
+                Agent agent = agentMap.get(agentName);
                 String res = agent.executeStep(step, inputList);
                 System.out.println(res);
                 step.setStepNotes(res);
@@ -107,7 +103,6 @@ public class PlanningFlow {
 
         PlanningFlowAssistant assistant = AiServices.builder(PlanningFlowAssistant.class)
             .chatLanguageModel(model)
-            .chatMemory(MessageWindowChatMemory.withMaxMessages(10))
             .tools(tool)
             .build();
 

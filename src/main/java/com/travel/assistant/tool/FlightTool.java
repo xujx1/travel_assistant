@@ -19,4 +19,13 @@ public class FlightTool {
             new Traffic("杭州", "北京", "1000", "5小时")
         );
     }
+
+    @Tool(name = "航班票购买工具",
+        value = "根据的用户的时间、出发点、目的地购买航班票信息，返回结果true就是购买成功")
+    public boolean ticket(
+        @P("出发城市") String departureCity,
+        @P("目的城市") String destinationCity,
+        @P("出发日期") String date) {
+        return true;
+    }
 }

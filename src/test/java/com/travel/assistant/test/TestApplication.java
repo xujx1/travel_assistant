@@ -35,7 +35,7 @@ public class TestApplication {
     public void getDeptLoopLevelType() {
         System.out.println("Enter your prompt: ");
 
-        String prompt = "我需要去北京出差，帮我制定一个出行计划";
+        String prompt = "我计划从杭州去北京旅行三天，帮我制定一个出行计划";
 
         System.out.println("PlanName: " + prompt);
 

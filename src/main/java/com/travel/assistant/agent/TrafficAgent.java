@@ -8,7 +8,6 @@ import com.travel.assistant.domain.PlanStep;
 import com.travel.assistant.tool.FlightTool;
 import com.travel.assistant.tool.TrainTool;
 import dev.langchain4j.data.message.ChatMessage;
-import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.service.AiServices;
@@ -16,7 +15,7 @@ import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 @Component("trafficAgent")
-public class TrafficAgent implements BaseAgent {
+public class TrafficAgent implements Agent {
 
     @Resource
     private ChatLanguageModel model;
